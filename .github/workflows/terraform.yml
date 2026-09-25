@@ -90,10 +90,6 @@ on:
         default: "https://192.168.0.200:8006/"
         type: string
 
-    secrets:
-      PROXMOX_API_TOKEN:
-        required: true
-
 jobs:
   terraform:
     runs-on: docker
