@@ -57,7 +57,7 @@ jobs:
         run: terraform init
       - name: Terraform Plan
         id: terraform_plan
-        run: terraform plan -var="vm_name=${{ inputs.vm_name }}" -var="memory=${{ inputs.memory }}" -var="cpu_cores=${{ inputs.cpu_cores }}" -var="disk_size=${{ inputs.disk_size }}" -var="node_name=${{ inputs.node_name }}" -var="datastore_id=${{ inputs.datastore_id }}" -var="vm_username=${{ inputs.vm_username }}" -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"
+        run: terraform plan -var="vm_name=${{ inputs.vm_name }}" -var="memory=${{ inputs.memory }}" -var="cpu_cores=${{ inputs.cpu_cores }}" -var="disk_size=${{ inputs.disk_size }}" -var="node_name=${{ inputs.node_name }}" -var="datastore_id=${{ inputs.datastore_id }}" -var="vm_username=${{ inputs.vm_username }}" -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}" | tee plan.txt && echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY" && echo '```' >> "$GITHUB_STEP_SUMMARY" && cat plan.txt >> "$GITHUB_STEP_SUMMARY" && echo '```' >> "$GITHUB_STEP_SUMMARY"
   apply:
     name: Terraform Apply
     needs: plan
