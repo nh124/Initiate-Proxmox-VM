@@ -55,7 +55,7 @@ variable "datastore_id" {
 variable "image_datastore_id" {
   description = "Proxmox datastore used to store the downloaded image"
   type        = string
-  default     = "local"
+  default     = "big-4tb"
 }
 
 variable "vm_username" {
