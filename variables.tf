@@ -64,8 +64,9 @@ variable "vm_username" {
 }
 
 variable "vm_password" {
-  description = "Endpoint for the Proxmox API"
+  description = "Password for the VM"
   type        = string
+  sensitive   = true
 }
 
 

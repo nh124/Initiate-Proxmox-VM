@@ -81,10 +81,12 @@ workflow?.addJob("plan", {
       name: "Checkout",
       uses: "actions/checkout@v4",
     },
+
     {
       name: "Terraform Init",
       run: "terraform init",
     },
+
     {
       name: "Terraform Plan",
       run: [
@@ -96,6 +98,8 @@ workflow?.addJob("plan", {
         '-var="node_name=${{ inputs.node_name }}"',
         '-var="datastore_id=${{ inputs.datastore_id }}"',
         '-var="vm_username=${{ inputs.vm_username }}"',
+        '-var="vm_password=${{ secrets.VM_PASSWORD }}"',
+        '-var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"',
       ].join(" "),
     },
   ],
@@ -125,10 +129,13 @@ workflow?.addJob("apply", {
         '-var="node_name=${{ inputs.node_name }}"',
         '-var="datastore_id=${{ inputs.datastore_id }}"',
         '-var="vm_username=${{ inputs.vm_username }}"',
+        '-var="vm_password=${{ secrets.VM_PASSWORD }}"',
+        '-var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"',
       ].join(" "),
     },
   ],
 });
+
 project.tasks.addTask("copy-github", {
   exec: "cp -R .github ../.github",
 });
