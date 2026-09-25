@@ -129,5 +129,8 @@ workflow?.addJob("apply", {
     },
   ],
 });
+project.tasks.addTask("copy-github", {
+  exec: "cp -R .github ../.github",
+});
 
 project.synth();

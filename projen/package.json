@@ -6,6 +6,7 @@
     "bump:releasable-commits": "projen bump:releasable-commits",
     "clobber": "projen clobber",
     "compile": "projen compile",
+    "copy-github": "projen copy-github",
     "default": "projen default",
     "eject": "projen eject",
     "eslint": "projen eslint",

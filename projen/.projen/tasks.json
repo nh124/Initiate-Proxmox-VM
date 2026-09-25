@@ -125,6 +125,14 @@
         }
       ]
     },
+    "copy-github": {
+      "name": "copy-github",
+      "steps": [
+        {
+          "exec": "cp -R .github ../.github"
+        }
+      ]
+    },
     "default": {
       "name": "default",
       "description": "Synthesize project files",
