@@ -2,9 +2,6 @@
 
 name: terraform
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       vm_name:
@@ -57,15 +54,4 @@ jobs:
         run: terraform init -input=false -no-color
       - name: Terraform Plan
         id: terraform_plan
-        run: terraform plan -input=false -no-color -var="vm_name=${{ inputs.vm_name }}" -var="memory=${{ inputs.memory }}" -var="cpu_cores=${{ inputs.cpu_cores }}" -var="disk_size=${{ inputs.disk_size }}" -var="node_name=${{ inputs.node_name }}" -var="datastore_id=${{ inputs.datastore_id }}" -var="vm_username=${{ inputs.vm_username }}" -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}" | tee plan.txt && echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY" && echo "" >> "$GITHUB_STEP_SUMMARY" && echo "\`\`\`text" >> "$GITHUB_STEP_SUMMARY" && cat plan.txt >> "$GITHUB_STEP_SUMMARY" && echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
-  apply:
-    name: Terraform Apply
-    needs: plan
-    runs-on: self-hosted
-    permissions:
-      contents: read
-    environment: terraform-apply
-    steps:
-      - name: Terraform Apply
-        id: terraform_apply
-        run: terraform apply -auto-approve -input=false -no-color -var="vm_name=${{ inputs.vm_name }}" -var="memory=${{ inputs.memory }}" -var="cpu_cores=${{ inputs.cpu_cores }}" -var="disk_size=${{ inputs.disk_size }}" -var="node_name=${{ inputs.node_name }}" -var="datastore_id=${{ inputs.datastore_id }}" -var="vm_username=${{ inputs.vm_username }}" -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"
+        run: terraform plan -input=false -no-color -var="vm_name=${{ inputs.vm_name }}" -var="memory=${{ inputs.memory }}" -var="cpu_cores=${{ inputs.cpu_cores }}" -var="disk_size=${{ inputs.disk_size }}" -var="node_name=${{ inputs.node_name }}" -var="datastore_id=${{ inputs.datastore_id }}" -var="vm_username=${{ inputs.vm_username }}" -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"
