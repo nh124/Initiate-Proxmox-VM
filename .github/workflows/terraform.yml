@@ -1,0 +1,145 @@
+name: Terraform
+
+on:
+  workflow_dispatch:
+    inputs:
+      vm_name:
+        description: "VM name"
+        required: true
+        default: "forgejo-dev-server"
+        type: string
+
+      vm_username:
+        description: "VM username"
+        required: true
+        default: "ubuntu"
+        type: string
+
+      vm_password:
+        description: "VM password"
+        required: true
+        type: string
+
+      memory:
+        description: "Memory (MB)"
+        required: true
+        default: "2048"
+        type: string
+
+      cpu_cores:
+        description: "CPU cores"
+        required: true
+        default: "2"
+        type: string
+
+      disk_size:
+        description: "Disk size (GB)"
+        required: true
+        default: "10"
+        type: string
+
+      node_name:
+        description: "Proxmox node"
+        required: true
+        default: "pve"
+        type: choice
+        options:
+          - pve
+
+      bridge:
+        description: "Network bridge"
+        required: true
+        default: "vmbr0"
+        type: choice
+        options:
+          - vmbr0
+
+      datastore_id:
+        description: "VM datastore"
+        required: true
+        default: "big-4tb"
+        type: choice
+        options:
+          - big-4tb
+          - local
+
+      image_datastore_id:
+        description: "Ubuntu image datastore"
+        required: true
+        default: "local"
+        type: choice
+        options:
+          - local
+          - big-4tb
+
+      ubuntu_image_url:
+        description: "Ubuntu image URL"
+        required: true
+        default: "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+        type: string
+
+      ubuntu_image_file_name:
+        description: "Ubuntu image filename"
+        required: true
+        default: "ubuntu-24.04-server-cloudimg-amd64.qcow2"
+        type: string
+
+      proxmox_endpoint:
+        description: "Proxmox API endpoint"
+        required: true
+        default: "https://192.168.0.200:8006/"
+        type: string
+
+    secrets:
+      PROXMOX_API_TOKEN:
+        required: true
+
+jobs:
+  terraform:
+    runs-on: docker
+
+    env:
+      TF_VAR_vm_name: ${{ inputs.vm_name }}
+      TF_VAR_vm_username: ${{ inputs.vm_username }}
+      TF_VAR_vm_password: ${{ inputs.vm_password }}
+      TF_VAR_memory: ${{ inputs.memory }}
+      TF_VAR_cpu_cores: ${{ inputs.cpu_cores }}
+      TF_VAR_disk_size: ${{ inputs.disk_size }}
+      TF_VAR_node_name: ${{ inputs.node_name }}
+      TF_VAR_bridge: ${{ inputs.bridge }}
+      TF_VAR_datastore_id: ${{ inputs.datastore_id }}
+      TF_VAR_image_datastore_id: ${{ inputs.image_datastore_id }}
+      TF_VAR_ubuntu_image_url: ${{ inputs.ubuntu_image_url }}
+      TF_VAR_ubuntu_image_file_name: ${{ inputs.ubuntu_image_file_name }}
+      TF_VAR_proxmox_endpoint: ${{ inputs.proxmox_endpoint }}
+      TF_VAR_proxmox_api_token: ${{ secrets.PROXMOX_API_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        run: |
+          apt-get update
+          apt-get install -y gnupg software-properties-common curl
+
+          curl -fsSL https://apt.releases.hashicorp.com/gpg \
+            | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com noble main" \
+            > /etc/apt/sources.list.d/hashicorp.list
+
+          apt-get update
+          apt-get install -y terraform
+
+      - name: Terraform Version
+        run: terraform version
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
