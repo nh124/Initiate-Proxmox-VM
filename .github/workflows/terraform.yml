@@ -68,4 +68,4 @@ jobs:
     steps:
       - name: Terraform Apply
         id: terraform_apply
-        run: terraform apply -var="vm_name=${{ inputs.vm_name }}" -var="memory=${{ inputs.memory }}" -var="cpu_cores=${{ inputs.cpu_cores }}" -var="disk_size=${{ inputs.disk_size }}" -var="node_name=${{ inputs.node_name }}" -var="datastore_id=${{ inputs.datastore_id }}" -var="vm_username=${{ inputs.vm_username }}" -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"
+        run: terraform apply -auto-approve -var="vm_name=${{ inputs.vm_name }}" -var="memory=${{ inputs.memory }}" -var="cpu_cores=${{ inputs.cpu_cores }}" -var="disk_size=${{ inputs.disk_size }}" -var="node_name=${{ inputs.node_name }}" -var="datastore_id=${{ inputs.datastore_id }}" -var="vm_username=${{ inputs.vm_username }}" -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"

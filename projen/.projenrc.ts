@@ -121,7 +121,7 @@ workflow?.addJob("apply", {
     {
       name: "Terraform Apply",
       run: [
-        "terraform apply",
+        "terraform apply -auto-approve",
         '-var="vm_name=${{ inputs.vm_name }}"',
         '-var="memory=${{ inputs.memory }}"',
         '-var="cpu_cores=${{ inputs.cpu_cores }}"',
