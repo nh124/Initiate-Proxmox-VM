@@ -70,6 +70,7 @@ workflow?.on({
 
 workflow?.addJob("plan", {
   name: "Terraform Plan",
+
   runsOn: ["self-hosted"],
 
   permissions: {
@@ -84,13 +85,15 @@ workflow?.addJob("plan", {
 
     {
       name: "Terraform Init",
-      run: "terraform init",
+      run: "terraform init -input=false -no-color",
     },
 
     {
       name: "Terraform Plan",
       run: [
         "terraform plan",
+        "-input=false",
+        "-no-color",
         '-var="vm_name=${{ inputs.vm_name }}"',
         '-var="memory=${{ inputs.memory }}"',
         '-var="cpu_cores=${{ inputs.cpu_cores }}"',
@@ -101,10 +104,12 @@ workflow?.addJob("plan", {
         '-var="vm_password=${{ secrets.VM_PASSWORD }}"',
         '-var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"',
         "| tee plan.txt",
+
         '&& echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY"',
-        "&& echo '```' >> \"$GITHUB_STEP_SUMMARY\"",
+        '&& echo "" >> "$GITHUB_STEP_SUMMARY"',
+        '&& echo "\\`\\`\\`text" >> "$GITHUB_STEP_SUMMARY"',
         '&& cat plan.txt >> "$GITHUB_STEP_SUMMARY"',
-        "&& echo '```' >> \"$GITHUB_STEP_SUMMARY\"",
+        '&& echo "\\`\\`\\`" >> "$GITHUB_STEP_SUMMARY"',
       ].join(" "),
     },
   ],
@@ -112,6 +117,7 @@ workflow?.addJob("plan", {
 
 workflow?.addJob("apply", {
   name: "Terraform Apply",
+
   runsOn: ["self-hosted"],
 
   needs: ["plan"],
@@ -126,7 +132,10 @@ workflow?.addJob("apply", {
     {
       name: "Terraform Apply",
       run: [
-        "terraform apply -auto-approve",
+        "terraform apply",
+        "-auto-approve",
+        "-input=false",
+        "-no-color",
         '-var="vm_name=${{ inputs.vm_name }}"',
         '-var="memory=${{ inputs.memory }}"',
         '-var="cpu_cores=${{ inputs.cpu_cores }}"',
