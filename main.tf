@@ -12,7 +12,7 @@ module "proxmox_vm" {
   vm_password = var.vm_password
 }
 
-module "proxmox_vm" {
+module "automation_vm" {
   source = "./proxmox_vm"
   for_each = {
     for vm in local.automation_containers : vm.name => vm
