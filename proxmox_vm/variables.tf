@@ -105,8 +105,3 @@ variable "ubuntu_image_file_name" {
   type        = string
   default     = "ubuntu-24.04-server-cloudimg-amd64.qcow2"
 }
-
-variable "user_data_file_id" {
-  description = "Proxmox file ID for the cloud-init user data file"
-  type        = string
-}
