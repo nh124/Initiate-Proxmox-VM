@@ -19,3 +19,8 @@ resource "talos_machine_configuration_apply" "controlplane" {
     module.proxmox_vm
   ]
 }
+
+output "talos_client_configuration" {
+  value     = talos_machine_secrets.this.client_configuration
+  sensitive = true
+}
