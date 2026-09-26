@@ -198,15 +198,6 @@ applyWorkflow?.addJob("apply", {
         "  --endpoint-url http://192.168.0.61:9100",
       ].join("\n"),
     },
-    {
-      name: "Upload Talos Config to RustFS",
-      run: [
-        "aws s3 cp \\",
-        "  talos/talosconfig \\",
-        "  s3://talos-config/serverden/talosconfig \\",
-        "  --endpoint-url http://192.168.0.61:9100",
-      ].join("\n"),
-    },
   ],
 });
 

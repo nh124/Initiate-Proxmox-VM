@@ -69,10 +69,3 @@ jobs:
             talos/talosconfig \
             s3://talos-config/serverden/talosconfig \
             --endpoint-url http://192.168.0.61:9100
-      - name: Upload Talos Config to RustFS
-        id: upload_talos_config_to_rustfs_2
-        run: |-
-          aws s3 cp \
-            talos/talosconfig \
-            s3://talos-config/serverden/talosconfig \
-            --endpoint-url http://192.168.0.61:9100
