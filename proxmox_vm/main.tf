@@ -20,10 +20,9 @@ resource "proxmox_virtual_environment_vm" "terraform_test" {
     discard      = var.disk_discard
     size         = var.disk_size
   }
-
-  user_data_file_id = var.user_data_file_id
   
   initialization {
+    user_data_file_id = var.user_data_file_id
     ip_config {
       ipv4 {
         address = var.vm_ip_address
