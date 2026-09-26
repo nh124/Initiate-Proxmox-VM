@@ -8,11 +8,6 @@ variable "proxmox_api_token" {
   sensitive = true
 }
 
-variable "s3_endpoint" {
-  description = "Endpoint for the RustFS"
-  type      = string
-}
-
 variable "vm_username" {
   type      = string
   sensitive = true
