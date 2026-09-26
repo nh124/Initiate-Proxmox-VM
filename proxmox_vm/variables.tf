@@ -18,10 +18,6 @@ variable "disk_size" {
   type = number
 }
 
-variable "ip_address" {
-  type = string
-}
-
 variable "mac_address" {
   type = string
 }

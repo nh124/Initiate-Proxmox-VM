@@ -22,22 +22,27 @@ variable "network_bridge" {
   default = "vmbr0"
 }
 
-variable "talos_version" {
-  type    = string
-  default = "v1.14.0"
-}
-
 variable "cluster_name" {
   type    = string
   default = "serverden"
 }
 
-variable "control_plane_ip" {
-  type    = string
-  default = "192.168.0.50"
-}
-
 variable "cluster_endpoint" {
   type    = string
   default = "https://192.168.0.50:6443"
+}
+
+variable "talos_version" {
+  type    = string
+  default = "v1.14.0"
+}
+
+variable "control_plane_ip" {
+  type    = string
+  default = "192.168.0.117"
+}
+
+variable "control_plane_static_ip" {
+  type    = string
+  default = "192.168.0.50"
 }
