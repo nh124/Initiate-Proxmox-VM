@@ -26,6 +26,6 @@ output "talos_client_configuration" {
 }
 
 resource "local_sensitive_file" "talosconfig" {
-  content  = talos_machine_secrets.this.client_configuration
+  content  = yamlencode(talos_machine_secrets.this.client_configuration)
   filename = "${path.root}/talos/talosconfig"
 }
