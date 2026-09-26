@@ -8,9 +8,15 @@ data "talos_machine_configuration" "controlplane" {
   talos_version    = var.talos_version
 }
 
-resource "talos_machine_configuration_apply" "controlplane" {
+data "talos_client_configuration" "this" {
+  cluster_name         = var.cluster_name
   client_configuration = talos_machine_secrets.this.client_configuration
+  endpoints            = [var.control_plane_ip]
+  nodes                = [var.control_plane_ip]
+}
 
+resource "talos_machine_configuration_apply" "controlplane" {
+  client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
 
   node = var.control_plane_ip
@@ -20,12 +26,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
   ]
 }
 
-output "talos_client_configuration" {
-  value     = talos_machine_secrets.this.client_configuration
-  sensitive = true
-}
-
 resource "local_sensitive_file" "talosconfig" {
-  content  = yamlencode(talos_machine_secrets.this.client_configuration)
+  content  = data.talos_client_configuration.this.talos_config
   filename = "${path.root}/talos/talosconfig"
 }

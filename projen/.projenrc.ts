@@ -186,20 +186,6 @@ applyWorkflow?.addJob("apply", {
       run: "terraform init -input=false -no-color",
     },
     {
-      name: "Inspect Talos Client Configuration",
-
-      run: [
-        "terraform providers schema -json > provider-schema.json",
-        "python3 - <<'PY'",
-        "import json",
-        "with open('provider-schema.json') as f:",
-        "    data = json.load(f)",
-        "provider = data['provider_schemas']['registry.terraform.io/siderolabs/talos']",
-        "print(json.dumps(provider, indent=2))",
-        "PY",
-      ].join("\n"),
-    },
-    {
       name: "Terraform Apply",
       run: "terraform apply -input=false -no-color -auto-approve tfplan",
     },
