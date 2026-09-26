@@ -29,7 +29,7 @@ variable "cluster_name" {
 
 variable "cluster_endpoint" {
   type    = string
-  default = "https://192.168.0.50:6443"
+  default = "https://192.168.0.117:6443"
 }
 
 variable "talos_version" {
