@@ -4,8 +4,8 @@ resource "proxmox_virtual_environment_vm" "talos" {
   node_name       = var.node_name
   started         = true
   stop_on_destroy = true
-  machine = "q35"
-  bios    = "ovmf"
+  machine         = "q35"
+  bios            = "ovmf"
   cpu {
     type    = "host"
     cores   = var.cores
