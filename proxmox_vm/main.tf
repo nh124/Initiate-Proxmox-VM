@@ -1,44 +1,39 @@
-resource "proxmox_virtual_environment_vm" "terraform_test" {
-  name      = var.vm_name
+resource "proxmox_virtual_environment_vm" "talos" {
+  vm_id     = var.vm_id
+  name      = var.name
   node_name = var.node_name
-
-  stop_on_destroy = var.stop_on_destroy
-
+  started        = true
+  stop_on_destroy = true
+  machine = "q35"
+  bios    = "ovmf"
   cpu {
-    cores = var.cpu_cores
+    type    = "host"
+    cores   = var.cores
+    sockets = 1
   }
-
   memory {
     dedicated = var.memory
   }
-
   disk {
     datastore_id = var.datastore_id
-    import_from  = proxmox_download_file.ubuntu.id
-    interface    = var.disk_interface
-    iothread     = var.disk_iothread
-    discard      = var.disk_discard
+    interface    = "scsi0"
     size         = var.disk_size
+    iothread     = true
+    discard      = "on"
   }
-
-  initialization {
-    ip_config {
-      ipv4 {
-        address = var.vm_ip_address
-      }
-    }
-
-    user_account {
-      username = var.vm_username
-      password = var.vm_password
-    }
+  cdrom {
+    file_id = proxmox_virtual_environment_download_file.talos_iso
   }
-
   network_device {
-    bridge = var.bridge
+    bridge      = var.bridge
+    mac_address = var.mac_address
+    model       = "virtio"
   }
-
-  agent {
-    enabled = var.enable_qemu_agent
+  boot_order = ["ide2", "scsi0"]
+  serial_device {
+    device = "socket"
+  }
+  vga {
+    type = "serial0"
   }
 }

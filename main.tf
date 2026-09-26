@@ -1,27 +1,17 @@
 module "proxmox_vm" {
   source = "./proxmox_vm"
-  for_each = {
-    for vm in local.vms : vm.name => vm
-  }
-  vm_name     = each.value.name
-  cpu_cores   = each.value.cpu
-  memory      = each.value.ram
-  disk_size   = each.value.disk
-  bridge      = each.value.bridge
-  vm_username = var.vm_username
-  vm_password = var.vm_password
-}
 
-module "automation_vm" {
-  source = "./proxmox_vm"
-  for_each = {
-    for vm in local.automation_containers : vm.name => vm
-  }
-  vm_name     = each.value.name
-  cpu_cores   = each.value.cpu
-  memory      = each.value.ram
-  disk_size   = each.value.disk
-  bridge      = each.value.bridge
-  vm_username = var.vm_username
-  vm_password = var.vm_password
+  for_each = local.vms
+
+  vm_id       = each.key
+  name        = each.value.name
+  cores       = each.value.cores
+  memory      = each.value.memory
+  disk_size   = each.value.disk_size
+  ip_address  = each.value.ip_address
+  mac_address = each.value.mac_address
+
+  node_name    = var.proxmox_node
+  datastore_id = var.datastore_id
+  bridge       = var.network_bridge
 }
