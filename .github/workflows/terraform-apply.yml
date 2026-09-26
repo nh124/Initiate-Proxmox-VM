@@ -62,16 +62,15 @@ jobs:
       - name: Terraform Apply
         id: terraform_apply
         run: terraform apply -input=false -no-color -auto-approve tfplan
-      - name: Install AWS CLI
-        id: install_aws_cli
-        run: |-
-          if ! command -v aws >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install -y awscli
-          fi
-          aws --version
       - name: Upload Talos Config to RustFS
         id: upload_talos_config_to_rustfs
+        run: |-
+          aws s3 cp \
+            talos/talosconfig \
+            s3://talos-config/serverden/talosconfig \
+            --endpoint-url http://192.168.0.61:9100
+      - name: Upload Talos Config to RustFS
+        id: upload_talos_config_to_rustfs_2
         run: |-
           aws s3 cp \
             talos/talosconfig \

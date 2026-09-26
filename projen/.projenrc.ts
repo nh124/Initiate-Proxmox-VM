@@ -190,13 +190,12 @@ applyWorkflow?.addJob("apply", {
       run: "terraform apply -input=false -no-color -auto-approve tfplan",
     },
     {
-      name: "Install AWS CLI",
+      name: "Upload Talos Config to RustFS",
       run: [
-        "if ! command -v aws >/dev/null 2>&1; then",
-        "  sudo apt-get update",
-        "  sudo apt-get install -y awscli",
-        "fi",
-        "aws --version",
+        "aws s3 cp \\",
+        "  talos/talosconfig \\",
+        "  s3://talos-config/serverden/talosconfig \\",
+        "  --endpoint-url http://192.168.0.61:9100",
       ].join("\n"),
     },
     {
