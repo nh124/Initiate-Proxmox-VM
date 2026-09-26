@@ -21,7 +21,7 @@ jobs:
         run: terraform init -input=false -no-color
       - name: Terraform Plan
         id: terraform_plan
-        run: terraform plan -input=false -no-color -out=tfplan -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="vm_username=${{ secrets.VM_USERNAME }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}" -var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}" | tee plan.txt
+        run: terraform plan -input=false -no-color -out=tfplan -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}" -var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}" | tee plan.txt
       - name: Add Plan to Summary
         id: add_plan_to_summary
         run: |-

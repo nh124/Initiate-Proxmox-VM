@@ -22,8 +22,6 @@ const project = new typescript.TypeScriptProject({
  * Terraform variables passed from GitHub Actions secrets.
  */
 const terraformVariables = [
-  '-var="vm_password=${{ secrets.VM_PASSWORD }}"',
-  '-var="vm_username=${{ secrets.VM_USERNAME }}"',
   '-var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"',
   '-var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}"',
 ];
@@ -250,6 +248,7 @@ const workflowFiles = [
   "terraform.yml",
   "terraform-apply.yml",
   "terraform-destroy.yml",
+  "upgrade.yml",
 ];
 
 for (const file of workflowFiles) {

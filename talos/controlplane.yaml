@@ -1,0 +1,385 @@
+version: v1alpha1 # Indicates the schema used to decode the contents.
+debug: false # Enable verbose logging to the console.
+persist: true
+# Provides machine specific configuration options.
+machine:
+    type: controlplane # Defines the role of the machine within the cluster.
+    token: aajrkt.ou8fiuv66n7fihys # The `token` is used by a machine to join the PKI of the cluster.
+    # The root certificate authority of the PKI.
+    ca:
+        crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJQekNCOHFBREFnRUNBaEVBeWN4cmdDVDd4dWtySmNkNGxWMXRTekFGQmdNclpYQXdFREVPTUF3R0ExVUUKQ2hNRmRHRnNiM013SGhjTk1qWXdPVEkyTVRjek5UUXdXaGNOTXpZd09USXpNVGN6TlRRd1dqQVFNUTR3REFZRApWUVFLRXdWMFlXeHZjekFxTUFVR0F5dGxjQU1oQUs2d2x0U1Q1UE9scnhzSTQxUVFBK2FYT2IvSkJYdjJJbHZCCi9qczkyeUttbzJFd1h6QU9CZ05WSFE4QkFmOEVCQU1DQW9Rd0hRWURWUjBsQkJZd0ZBWUlLd1lCQlFVSEF3RUcKQ0NzR0FRVUZCd01DTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkhiL21DNmtNWkhaWHVYWApLZW96dGs5Zjd3RnpNQVVHQXl0bGNBTkJBSlZsWmQ0RitZWTdKRk1RSlFDUDJ2OG1UZWJpbkFpYXNPZFRQemZUCnpEYytLNVpJR2ErcDQ0RmdJZ2pyY1lWOW5NZjZ5RzdkTXJWN0Iveno1dDE0S1FZPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+        key: LS0tLS1CRUdJTiBFRDI1NTE5IFBSSVZBVEUgS0VZLS0tLS0KTUM0Q0FRQXdCUVlESzJWd0JDSUVJQnhiSFJFS1pWa3l5S2NlSm9UU1c0QWhMUGdPdk1raDdoOUw5a1d5bGhKcgotLS0tLUVORCBFRDI1NTE5IFBSSVZBVEUgS0VZLS0tLS0K
+    # Extra certificate subject alternative names for the machine's certificate.
+    certSANs: []
+    #   # Uncomment this to enable SANs.
+    #   - 10.0.0.10
+    #   - 172.16.0.10
+    #   - 192.168.0.10
+
+    # Features describe individual Talos features that can be switched on or off.
+    features:
+        diskQuotaSupport: true # Enable XFS project quota support for EPHEMERAL partition and user disks.
+    
+    # # Configures the logging system.
+    # logging:
+    #     # Logging destination.
+    #     destinations:
+    #         - endpoint: tcp://1.2.3.4:12345 # Where to send logs. Supported protocols are "tcp" and "udp".
+    #           format: json_lines # Logs format.
+    # logging:
+    #     # Logging destination.
+    #     destinations:
+    #         - endpoint: udp://127.0.0.1:12345 # Where to send logs. Supported protocols are "tcp" and "udp".
+    #           format: json_lines # Logs format.
+    #           # Extra tags (key-value) pairs to attach to every log message sent.
+    #           extraTags:
+    #             machine: worker-1
+
+    # # Configures the seccomp profiles for the machine.
+    # seccompProfiles:
+    #     - name: audit.json # The `name` field is used to provide the file name of the seccomp profile.
+    #       # The `value` field is used to provide the seccomp profile.
+    #       value:
+    #         defaultAction: SCMP_ACT_LOG
+# Provides cluster specific configuration options.
+cluster:
+    token: yxpk7u.nxpfelaxuix5kye0 # The [bootstrap token](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/) used to join the cluster.
+    # Etcd specific configuration options.
+    etcd:
+        # The `ca` is the root certificate authority of the PKI.
+        ca:
+            crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJmekNDQVNTZ0F3SUJBZ0lSQUlZOStBaU9DOEY1NmhVbi82WUpBdG93Q2dZSUtvWkl6ajBFQXdJd0R6RU4KTUFzR0ExVUVDaE1FWlhSalpEQWVGdzB5TmpBNU1qWXhOek0xTkRCYUZ3MHpOakE1TWpNeE56TTFOREJhTUE4eApEVEFMQmdOVkJBb1RCR1YwWTJRd1dUQVRCZ2NxaGtqT1BRSUJCZ2dxaGtqT1BRTUJCd05DQUFRQ1hGbmMxenFJCm9qTzN0cVVYMTlURSt2a1FMbHFHRFdwRHROajlUSWx5ZVI3V3ZPQXlRTWRPV0hhV2pVa3YxSkRFODBITFM0d1MKZXl4WnNUMlhNcWY0bzJFd1h6QU9CZ05WSFE4QkFmOEVCQU1DQW9Rd0hRWURWUjBsQkJZd0ZBWUlLd1lCQlFVSApBd0VHQ0NzR0FRVUZCd01DTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkM2ZUdtNHJnQnhxCkVsL3BiNGtzZjd2YVdzUmxNQW9HQ0NxR1NNNDlCQU1DQTBrQU1FWUNJUURIKzNBN1RPZG4vS08yTFRwZ3Q5TjgKVFIrZFlNY3lhbFFHeVRSaG5URC9wQUloQU5wTmR6NFA4S1VQWU9vMWVSSWtwNmllNHVleVpTTkd3V0FJOU52WQpJS2dsCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+            key: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUMyU0V0anFmS1V5WHlWeDYyVHhRN3Iwb2pEZFJodVdGeElyS3BxMm54MUpvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFQWx4WjNOYzZpS0l6dDdhbEY5ZlV4UHI1RUM1YWhnMXFRN1RZL1V5SmNua2UxcnpnTWtESApUbGgybG8xSkw5U1F4UE5CeTB1TUVuc3NXYkU5bHpLbitBPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
+        
+        # # The container image used to create the etcd service.
+        # image: registry.k8s.io/etcd:3.7.1
+
+        # # The `advertisedSubnets` field configures the networks to pick etcd advertised IP from.
+        # advertisedSubnets:
+        #     - 10.0.0.0/8
+    
+    # # External cloud provider configuration.
+    # externalCloudProvider:
+    #     enabled: true # Enable external cloud provider.
+    #     # A list of urls that point to additional manifests for an external cloud provider.
+    #     manifests:
+    #         - https://raw.githubusercontent.com/kubernetes/cloud-provider-aws/v1.20.0-alpha.0/manifests/rbac.yaml
+    #         - https://raw.githubusercontent.com/kubernetes/cloud-provider-aws/v1.20.0-alpha.0/manifests/aws-cloud-controller-manager-daemonset.yaml
+
+    # # Settings for admin kubeconfig generation.
+    # adminKubeconfig:
+    #     certLifetime: 1h0m0s # Admin kubeconfig certificate lifetime (default is 1 year).
+---
+apiVersion: v1alpha1
+kind: DiscoveryServiceConfig
+name: default # Name of the discovery service configuration.
+endpoint: https://discovery.talos.dev/ # Discovery service endpoint to use.
+---
+apiVersion: v1alpha1
+kind: DiscoveryIdentityConfig
+clusterID: mmFtTB+hJDp2k4E/EZ1UmNxULzXywtSg8NlLPbZs8aw= # Globally unique identifier for this cluster (base64 encoded random 32 bytes).
+clusterSecret: E3RTM4CbuqzX8di4NpBumB+64gNHj9NxwsKIEmBSlpw= # Shared secret of cluster (base64 encoded random 32 bytes).
+---
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+# The installer describes the source of the installation.
+installer:
+    image: factory.talos.dev/metal-installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba:v1.14.1 # Allows for supplying the image used to perform the installation.
+# The provisioning describes how the installation disk should be provisioned.
+provisioning:
+    # Matches disks to initialize as physical volumes.
+    diskSelector:
+        match: disk.dev_path == "/dev/sda" # CEL expression matching a disk.
+    wipe: false # Indicates if the installation disk should be wiped at installation time.
+---
+apiVersion: v1alpha1
+kind: ResolverConfig
+# Configuration for host DNS resolver.
+hostDNS:
+    enabled: true # Enable host DNS caching resolver.
+    forwardKubeDNSToHost: true # Use the host DNS resolver as upstream for Kubernetes CoreDNS pods.
+---
+apiVersion: v1alpha1
+kind: VolumeConfig
+name: EPHEMERAL # Name of the volume.
+# The mount describes additional mount options.
+mount:
+    secure: true # Enable secure mount options (nosuid, nodev).
+
+# # The encryption describes how the volume is encrypted.
+# encryption:
+#     provider: luks2 # Encryption provider to use for the encryption.
+#     # Defines the encryption keys generation and storage method.
+#     keys:
+#         - slot: 0 # Key slot number for LUKS2 encryption.
+#           # Key which value is stored in the configuration file.
+#           static:
+#             passphrase: exampleKey # Defines the static passphrase value.
+#           
+#           # # KMS managed encryption key.
+#           # kms:
+#           #     endpoint: https://192.168.88.21:4443 # KMS endpoint to Seal/Unseal the key.
+#         - slot: 1 # Key slot number for LUKS2 encryption.
+#           # KMS managed encryption key.
+#           kms:
+#             endpoint: https://example-kms-endpoint.com # KMS endpoint to Seal/Unseal the key.
+#     cipher: aes-xts-plain64 # Cipher to use for the encryption. Depends on the encryption provider.
+#     blockSize: 4096 # Defines the encryption sector size.
+#     # Additional --perf parameters for the LUKS2 encryption.
+#     options:
+#         - no_read_workqueue
+#         - no_write_workqueue
+---
+apiVersion: v1alpha1
+kind: FilesystemTrimConfig
+interval: 168h0m0s # The interval at which the filesystems are trimmed.
+---
+apiVersion: v1alpha1
+kind: SecurityProfileConfig
+workloadIsolation: true # Enable workload isolation (run the container plane inside the sandbox namespace).
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: stable # A method to automatically generate a hostname for the machine.
+
+# # A static hostname to set for the machine.
+# hostname: controlplane1
+# hostname: controlplane1.example.org
+---
+apiVersion: v1alpha1
+kind: KubeClusterConfig
+clusterName: my-cluster # The cluster name.
+endpoint: https://192.168.0.50:6443 # The Kubernetes API endpoint.
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+# The `nodeIP` field is used to configure `--node-ip` flag for the kubelet.
+nodeIP: {}
+# Configures the node labels for the machine.
+labels:
+    node-role.kubernetes.io/control-plane: ""
+    node.kubernetes.io/exclude-from-external-load-balancers: ""
+# Configures the node taints for the machine. Effect is optional.
+taints:
+    node-role.kubernetes.io/control-plane: NoSchedule
+---
+apiVersion: v1alpha1
+kind: KubeletConfig
+image: ghcr.io/siderolabs/kubelet:v1.37.0 # The container image used to run the kubelet component.
+# Provide extra configuration for the kubelet.
+config: {}
+defaultRuntimeSeccompProfileEnabled: true # Enable container runtime default Seccomp profile.
+---
+apiVersion: v1alpha1
+kind: KubeNetworkConfig
+dnsDomain: cluster.local # The domain used by Kubernetes DNS.
+# The pod subnet (CIDR), this can be a single value or two values for dual-stack clusters.
+podSubnets:
+    - 10.244.0.0/16
+# The service subnet (CIDR), this can be a single value or two values for dual-stack clusters.
+serviceSubnets:
+    - 10.96.0.0/12
+---
+apiVersion: v1alpha1
+kind: KubeAPIServerCAConfig
+# The currently active issuing certificate authority for the Kubernetes API server.
+issuingCA:
+    cert: |
+        -----BEGIN CERTIFICATE-----
+        MIIBijCCATCgAwIBAgIRAPJZphBYHIrnv2P70wix6pswCgYIKoZIzj0EAwIwFTET
+        MBEGA1UEChMKa3ViZXJuZXRlczAeFw0yNjA5MjYxNzM1NDBaFw0zNjA5MjMxNzM1
+        NDBaMBUxEzARBgNVBAoTCmt1YmVybmV0ZXMwWTATBgcqhkjOPQIBBggqhkjOPQMB
+        BwNCAARb9KumVjoLpYTKZJKhPnQf/qn1HlQefhSJYd+8yDhG6JE0CGypI9iEok+n
+        ONnCK9sgmRkc8e9fR8l4Pr88ozkuo2EwXzAOBgNVHQ8BAf8EBAMCAoQwHQYDVR0l
+        BBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0O
+        BBYEFEs5te0lhXrlGpC1s9dyb+inWLfDMAoGCCqGSM49BAMCA0gAMEUCIQC5s14M
+        b2Sy1I0+l275xCyWsOzKt2FOV/qBMsc1yl6A3AIgZn/qOIk7l6hBH7w4+8nzIjWZ
+        /99YRCdhKfesyE7hFwQ=
+        -----END CERTIFICATE-----
+    key: |
+        -----BEGIN EC PRIVATE KEY-----
+        MHcCAQEEIA09TSa7wTgxiqPQ38P+OawjVVT8DK656HatEQf2hLqMoAoGCCqGSM49
+        AwEHoUQDQgAEW/SrplY6C6WEymSSoT50H/6p9R5UHn4UiWHfvMg4RuiRNAhsqSPY
+        hKJPpzjZwivbIJkZHPHvX0fJeD6/PKM5Lg==
+        -----END EC PRIVATE KEY-----
+---
+apiVersion: v1alpha1
+kind: KubePrismConfig
+port: 7445 # KubePrism port.
+---
+apiVersion: v1alpha1
+kind: KubeAggregatorCAConfig
+# The currently active issuing certificate authority for the Kubernetes API aggregator flow.
+issuingCA:
+    cert: |
+        -----BEGIN CERTIFICATE-----
+        MIIBYDCCAQWgAwIBAgIQfBRtj8IU0tWi7qiKjM9v6DAKBggqhkjOPQQDAjAAMB4X
+        DTI2MDkyNjE3MzU0MFoXDTM2MDkyMzE3MzU0MFowADBZMBMGByqGSM49AgEGCCqG
+        SM49AwEHA0IABI8YeLBccELXb23MXGVlW21FaCXB4IY4RiQruWRDmfJJVtCR3G4g
+        1Ndo8z6ABbaaFj6l2NWzB+ljAgBn0z5GWnKjYTBfMA4GA1UdDwEB/wQEAwIChDAd
+        BgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDwYDVR0TAQH/BAUwAwEB/zAd
+        BgNVHQ4EFgQUEdBKwdfROaHx/qPNKyNInEx55zMwCgYIKoZIzj0EAwIDSQAwRgIh
+        ANUBzzCrOBN4qRkTF1iay0F12W68t7cVMA2xXtbOaRrhAiEAyH8RZDqQBryn7NCu
+        b5sN++2mPyn4A7xzlsFFjFiab0s=
+        -----END CERTIFICATE-----
+    key: |
+        -----BEGIN EC PRIVATE KEY-----
+        MHcCAQEEICgKRHwSLyme6FcCfd11vMVRj6nYsTZud1rYiYhCnZkUoAoGCCqGSM49
+        AwEHoUQDQgAEjxh4sFxwQtdvbcxcZWVbbUVoJcHghjhGJCu5ZEOZ8klW0JHcbiDU
+        12jzPoAFtpoWPqXY1bMH6WMCAGfTPkZacg==
+        -----END EC PRIVATE KEY-----
+---
+apiVersion: v1alpha1
+kind: KubeAdmissionControlConfig
+name: PodSecurity # Admission control plugin name, should be a valid Kubernetes admission control plugin name.
+# Kubernetes API server [admission control plugins](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/).
+configuration:
+    apiVersion: pod-security.admission.config.k8s.io/v1alpha1
+    defaults:
+        audit: restricted
+        audit-version: latest
+        enforce: baseline
+        enforce-version: latest
+        warn: restricted
+        warn-version: latest
+    exemptions:
+        namespaces:
+            - kube-system
+        runtimeClasses: []
+        usernames: []
+    kind: PodSecurityConfiguration
+---
+apiVersion: v1alpha1
+kind: KubeAuditPolicyConfig
+# Kubernetes API server [audit policy](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) configuration.
+configuration:
+    apiVersion: audit.k8s.io/v1
+    kind: Policy
+    rules:
+        - level: Metadata
+---
+apiVersion: v1alpha1
+kind: KubeAuthenticationConfig
+# Kubernetes API server [authentication](https://kubernetes.io/docs/reference/access-authn-authz/authentication/) configuration.
+configuration:
+    anonymous:
+        conditions:
+            - path: /livez
+            - path: /readyz
+            - path: /healthz
+        enabled: true
+    jwt: []
+---
+apiVersion: v1alpha1
+kind: KubeAuthorizerConfig
+name: node # Name of the authorizer, should be be DNS1123 labels like myauthorizername or subdomains like myauthorizer.example.domain.
+type: Node # Type is the name of the authorizer.
+---
+apiVersion: v1alpha1
+kind: KubeAuthorizerConfig
+name: rbac # Name of the authorizer, should be be DNS1123 labels like myauthorizername or subdomains like myauthorizer.example.domain.
+type: RBAC # Type is the name of the authorizer.
+---
+apiVersion: v1alpha1
+kind: KubeEtcdEncryptionConfig
+# Kubernetes API server [encryption of secret data at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/).
+config:
+    resources:
+        - providers:
+            - secretbox:
+                keys:
+                    - name: key2
+                      secret: fD2LnFF1m8a0PU+1zq8Vu0camtSt25ZYO2Gofj7qYeM=
+          resources:
+            - secrets
+---
+apiVersion: v1alpha1
+kind: KubeServiceAccountConfig
+# The service account issuer configuration.
+issuer:
+    privateKey: | # The key which is used to sign the service account tokens.
+        -----BEGIN RSA PRIVATE KEY-----
+        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
+        -----END RSA PRIVATE KEY-----
+    issuerURL: https://192.168.0.50:6443 # The issuer URL which is used to sign the service account tokens.
+---
+apiVersion: v1alpha1
+kind: KubeAPIServerConfig
+image: registry.k8s.io/kube-apiserver:v1.37.0 # The container image used to run the kube-apiserver component.
+---
+apiVersion: v1alpha1
+kind: KubeControllerManagerConfig
+image: registry.k8s.io/kube-controller-manager:v1.37.0 # The container image used to run the kube-controller-manager component.
+---
+apiVersion: v1alpha1
+kind: KubeSchedulerConfig
+image: registry.k8s.io/kube-scheduler:v1.37.0 # The container image used to run the kube-scheduler component.
+# Provide configuration for the kube-scheduler static pod.
+config: {}
+---
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+image: registry.k8s.io/kube-proxy:v1.37.0 # The container image used in the kube-proxy manifest.
+# Provide configuration for the kube-proxy.
+config: {}
+---
+apiVersion: v1alpha1
+kind: KubeFlannelCNIConfig
+backendType: vxlan # Type of the Flannel backend to use.
+backendPort: 4789 # UDP port used by Flannel for encapsulating traffic (if the backend type requires encapsulation).
+
+# # Extra arguments for 'flanneld'.
+# extraArgs:
+#     - --iface-can-reach=192.168.1.1
+---
+apiVersion: v1alpha1
+kind: KubeCoreDNSConfig
+enabled: true # By default, CoreDNS deployment is enabled.
