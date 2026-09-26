@@ -189,6 +189,15 @@ applyWorkflow?.addJob("apply", {
       name: "Terraform Apply",
       run: "terraform apply -input=false -no-color -auto-approve tfplan",
     },
+    {
+      name: "Upload Talos Config",
+      uses: "actions/upload-artifact@v4",
+      with: {
+        name: "talosconfig",
+        path: "talos/talosconfig",
+        retentionDays: "1",
+      },
+    },
   ],
 });
 
