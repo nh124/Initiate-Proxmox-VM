@@ -186,6 +186,14 @@ applyWorkflow?.addJob("apply", {
       run: "terraform init -input=false -no-color",
     },
     {
+      name: "Inspect Talos Provider Schema",
+
+      run: [
+        "terraform providers schema -json > provider-schema.json",
+        "grep -o 'client_configuration[^,}]*' provider-schema.json | head -20",
+      ].join("\n"),
+    },
+    {
       name: "Terraform Apply",
       run: "terraform apply -input=false -no-color -auto-approve tfplan",
     },

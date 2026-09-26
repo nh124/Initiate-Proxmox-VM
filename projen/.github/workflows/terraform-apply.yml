@@ -59,6 +59,11 @@ jobs:
       - name: Terraform Init
         id: terraform_init
         run: terraform init -input=false -no-color
+      - name: Inspect Talos Provider Schema
+        id: inspect_talos_provider_schema
+        run: |-
+          terraform providers schema -json > provider-schema.json
+          grep -o 'client_configuration[^,}]*' provider-schema.json | head -20
       - name: Terraform Apply
         id: terraform_apply
         run: terraform apply -input=false -no-color -auto-approve tfplan
