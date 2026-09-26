@@ -22,7 +22,6 @@ resource "proxmox_virtual_environment_vm" "terraform_test" {
   }
   
   initialization {
-    user_data_file_id = var.user_data_file_id
     ip_config {
       ipv4 {
         address = var.vm_ip_address

@@ -10,5 +10,4 @@ module "proxmox_vm" {
   bridge = each.value.bridge
   vm_username = var.vm_username
   vm_password = var.vm_password
-  user_data_file_id = proxmox_virtual_environment_file.nextcloud_cloud_init.id
 }
