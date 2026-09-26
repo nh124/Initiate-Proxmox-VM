@@ -45,7 +45,7 @@ locals {
   ]
   automation_containers = [
     {
-      name   = "JFrog Container Registry"
+      name   = "jfrog-container-registry"
       cpu    = 4
       ram    = 4096
       disk   = 10
