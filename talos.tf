@@ -26,7 +26,20 @@ resource "talos_machine_configuration_apply" "controlplane" {
   ]
 }
 
+resource "talos_machine_bootstrap" "controlplane" {
+  node                 = var.control_plane_ip
+  client_configuration = talos_machine_secrets.this.client_configuration
+
+  depends_on = [
+    talos_machine_configuration_apply.controlplane
+  ]
+}
+
 resource "local_sensitive_file" "talosconfig" {
   content  = data.talos_client_configuration.this.talos_config
   filename = "${path.root}/talos/talosconfig"
+
+  depends_on = [
+    talos_machine_bootstrap.controlplane
+  ]
 }

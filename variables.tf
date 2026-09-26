@@ -41,8 +41,3 @@ variable "control_plane_ip" {
   type    = string
   default = "192.168.0.117"
 }
-
-variable "control_plane_static_ip" {
-  type    = string
-  default = "192.168.0.50"
-}
