@@ -22,7 +22,7 @@ resource "proxmox_virtual_environment_vm" "talos" {
     discard      = "on"
   }
   cdrom {
-    file_id = proxmox_virtual_environment_download_file.talos_iso.id
+    file_id = proxmox_download_file.talos_iso.id
   }
   network_device {
     bridge      = var.bridge
