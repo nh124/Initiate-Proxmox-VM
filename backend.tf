@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket       = "terraform-state"
-    key          = "proxmox/terraform.tfstate"
-    region       = "us-east-1"
+    bucket = "terraform-state"
+    key    = "proxmox/terraform.tfstate"
+    region = "us-east-1"
 
     endpoints = {
       s3 = "http://192.168.0.61:9100"
@@ -14,7 +14,7 @@ terraform {
     skip_region_validation      = true
     skip_requesting_account_id  = true
     skip_metadata_api_check     = true
-    skip_s3_checksum             = true
+    skip_s3_checksum            = true
 
     use_lockfile = true
   }

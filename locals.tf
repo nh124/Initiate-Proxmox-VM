@@ -1,12 +1,12 @@
 locals {
   vms = [
-    {
-      name   = "nextcloud"
-      cpu    = 4
-      ram    = 4096
-      disk   = 2000
-      bridge = "vmbr0"
-    },
+    # {
+    #   name   = "nextcloud"
+    #   cpu    = 4
+    #   ram    = 4096
+    #   disk   = 2000
+    #   bridge = "vmbr0"
+    # },
     # {
     #   name   = "vaultwarden"
     #   cpu    = 4
@@ -42,5 +42,14 @@ locals {
     #   disk   = 8
     #   bridge = "vmbr0"
     # }
+  ]
+  automation_containers = [
+    {
+      name   = "JFrog Container Registry"
+      cpu    = 4
+      ram    = 4096
+      disk   = 10
+      bridge = "vmbr0"
+    },
   ]
 }

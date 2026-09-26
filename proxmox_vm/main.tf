@@ -20,7 +20,7 @@ resource "proxmox_virtual_environment_vm" "terraform_test" {
     discard      = var.disk_discard
     size         = var.disk_size
   }
-  
+
   initialization {
     ip_config {
       ipv4 {
