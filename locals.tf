@@ -47,8 +47,8 @@ locals {
     {
       name   = "jfrog-container-registry"
       cpu    = 4
-      ram    = 4096
-      disk   = 10
+      ram    = 8096
+      disk   = 20
       bridge = "vmbr0"
     },
   ]
