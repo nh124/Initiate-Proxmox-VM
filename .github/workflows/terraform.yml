@@ -18,4 +18,19 @@ jobs:
         run: terraform init -input=false -no-color
       - name: Terraform Plan
         id: terraform_plan
-        run: terraform plan -input=false -no-color -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="vm_username=${{ secrets.VM_USERNAME }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}" -var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}"
+        run: terraform plan -input=false -no-color -out=tfplan -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="vm_username=${{ secrets.VM_USERNAME }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}" -var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}" | tee plan.txt
+      - name: Add Plan to Summary
+        id: add_plan_to_summary
+        run: |-
+          echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          cat plan.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload Terraform Plan
+        id: upload_terraform_plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: tfplan
+          retentionDays: "1"
