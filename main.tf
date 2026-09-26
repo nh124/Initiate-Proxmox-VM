@@ -18,4 +18,6 @@ module "proxmox_vm" {
   memory    = each.value.ram
   disk_size   = each.value.disk
   bridge = each.value.bridge
+  vm_username = var.vm_username
+  vm_password = var.vm_password
 }

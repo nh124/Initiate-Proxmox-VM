@@ -29,6 +29,7 @@ const project = new typescript.TypeScriptProject({
  */
 const terraformVariables = [
   '-var="vm_password=${{ secrets.VM_PASSWORD }}"',
+  '-var="vm_username=${{ secrets.VM_USERNAME }}"',
   '-var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"',
   '-var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}"',
 ];
