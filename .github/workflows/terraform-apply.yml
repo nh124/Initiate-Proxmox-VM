@@ -59,11 +59,17 @@ jobs:
       - name: Terraform Init
         id: terraform_init
         run: terraform init -input=false -no-color
-      - name: Inspect Talos Provider Schema
-        id: inspect_talos_provider_schema
+      - name: Inspect Talos Client Configuration
+        id: inspect_talos_client_configuration
         run: |-
           terraform providers schema -json > provider-schema.json
-          grep -o 'client_configuration[^,}]*' provider-schema.json | head -20
+          python3 - <<'PY'
+          import json
+          with open('provider-schema.json') as f:
+              data = json.load(f)
+          provider = data['provider_schemas']['registry.terraform.io/siderolabs/talos']
+          print(json.dumps(provider, indent=2))
+          PY
       - name: Terraform Apply
         id: terraform_apply
         run: terraform apply -input=false -no-color -auto-approve tfplan
