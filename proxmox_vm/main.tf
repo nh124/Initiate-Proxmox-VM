@@ -21,6 +21,8 @@ resource "proxmox_virtual_environment_vm" "terraform_test" {
     size         = var.disk_size
   }
 
+  user_data_file_id = var.user_data_file_id
+  
   initialization {
     ip_config {
       ipv4 {
