@@ -24,3 +24,8 @@ output "talos_client_configuration" {
   value     = talos_machine_secrets.this.client_configuration
   sensitive = true
 }
+
+resource "local_sensitive_file" "talosconfig" {
+  content  = talos_machine_secrets.this.client_configuration
+  filename = "${path.root}/talos/talosconfig"
+}
