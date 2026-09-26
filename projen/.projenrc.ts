@@ -4,15 +4,11 @@ import * as path from "path";
 
 const project = new typescript.TypeScriptProject({
   name: "proxmox-github-actions",
-
   packageManager: javascript.NodePackageManager.NPM,
-
   projenrcTs: true,
 
-  // Enable GitHub so we can create custom workflows.
   github: true,
 
-  // Disable Projen's default workflows.
   buildWorkflow: false,
   release: false,
   releaseToNpm: false,
@@ -33,11 +29,19 @@ const terraformVariables = [
 ];
 
 /**
+ * RustFS S3 credentials.
+ *
+ * GitHub Secrets:
+ * RUSTFS_ACCESS_KEY
+ * RUSTFS_SECRET_KEY
+ */
+const terraformEnvironment = {
+  AWS_ACCESS_KEY_ID: "${{ secrets.RUSTFS_ACCESS_KEY }}",
+  AWS_SECRET_ACCESS_KEY: "${{ secrets.RUSTFS_SECRET_KEY }}",
+};
+
+/**
  * Terraform Plan
- *
- * Manual execution only.
- *
- * Shows the complete Terraform plan in the GitHub Actions Summary.
  */
 const planWorkflow = project.github?.addWorkflow("terraform");
 
@@ -47,8 +51,8 @@ planWorkflow?.on({
 
 planWorkflow?.addJob("plan", {
   name: "Terraform Plan",
-
   runsOn: ["self-hosted"],
+  env: terraformEnvironment,
 
   permissions: {
     contents: github.workflows.JobPermission.READ,
@@ -59,12 +63,10 @@ planWorkflow?.addJob("plan", {
       name: "Checkout",
       uses: "actions/checkout@v4",
     },
-
     {
       name: "Terraform Init",
       run: "terraform init -input=false -no-color",
     },
-
     {
       name: "Terraform Plan",
       run: [
@@ -76,18 +78,16 @@ planWorkflow?.addJob("plan", {
         "| tee plan.txt",
       ].join(" "),
     },
-
     {
       name: "Add Plan to Summary",
       run: [
         'echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY"',
         'echo "" >> "$GITHUB_STEP_SUMMARY"',
-        "echo '```text' >> \"$GITHUB_STEP_SUMMARY\"",
+        "printf '\\x60\\x60\\x60text\\n' >> \"$GITHUB_STEP_SUMMARY\"",
         'cat plan.txt >> "$GITHUB_STEP_SUMMARY"',
-        "echo '```' >> \"$GITHUB_STEP_SUMMARY\"",
+        "printf '\\x60\\x60\\x60\\n' >> \"$GITHUB_STEP_SUMMARY\"",
       ].join("\n"),
     },
-
     {
       name: "Upload Terraform Plan",
       uses: "actions/upload-artifact@v4",
@@ -102,11 +102,6 @@ planWorkflow?.addJob("plan", {
 
 /**
  * Terraform Apply
- *
- * Manual execution only.
- *
- * First shows the plan, then requires approval through the
- * terraform-apply GitHub Environment before applying.
  */
 const applyWorkflow = project.github?.addWorkflow("terraform-apply");
 
@@ -114,13 +109,10 @@ applyWorkflow?.on({
   workflowDispatch: {},
 });
 
-/**
- * First job: generate and display the plan.
- */
 applyWorkflow?.addJob("plan", {
   name: "Terraform Plan",
-
   runsOn: ["self-hosted"],
+  env: terraformEnvironment,
 
   permissions: {
     contents: github.workflows.JobPermission.READ,
@@ -131,12 +123,10 @@ applyWorkflow?.addJob("plan", {
       name: "Checkout",
       uses: "actions/checkout@v4",
     },
-
     {
       name: "Terraform Init",
       run: "terraform init -input=false -no-color",
     },
-
     {
       name: "Terraform Plan",
       run: [
@@ -148,18 +138,16 @@ applyWorkflow?.addJob("plan", {
         "| tee plan.txt",
       ].join(" "),
     },
-
     {
       name: "Add Plan to Summary",
       run: [
         'echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY"',
         'echo "" >> "$GITHUB_STEP_SUMMARY"',
-        "echo '```text' >> \"$GITHUB_STEP_SUMMARY\"",
+        "printf '\\x60\\x60\\x60text\\n' >> \"$GITHUB_STEP_SUMMARY\"",
         'cat plan.txt >> "$GITHUB_STEP_SUMMARY"',
-        "echo '```' >> \"$GITHUB_STEP_SUMMARY\"",
+        "printf '\\x60\\x60\\x60\\n' >> \"$GITHUB_STEP_SUMMARY\"",
       ].join("\n"),
     },
-
     {
       name: "Upload Terraform Plan",
       uses: "actions/upload-artifact@v4",
@@ -172,17 +160,12 @@ applyWorkflow?.addJob("plan", {
   ],
 });
 
-/**
- * Second job: requires environment approval before applying.
- */
 applyWorkflow?.addJob("apply", {
   name: "Terraform Apply",
-
   runsOn: ["self-hosted"],
-
   needs: ["plan"],
-
   environment: "terraform-apply",
+  env: terraformEnvironment,
 
   permissions: {
     contents: github.workflows.JobPermission.READ,
@@ -193,7 +176,6 @@ applyWorkflow?.addJob("apply", {
       name: "Checkout",
       uses: "actions/checkout@v4",
     },
-
     {
       name: "Download Terraform Plan",
       uses: "actions/download-artifact@v4",
@@ -201,12 +183,10 @@ applyWorkflow?.addJob("apply", {
         name: "terraform-plan",
       },
     },
-
     {
       name: "Terraform Init",
       run: "terraform init -input=false -no-color",
     },
-
     {
       name: "Terraform Apply",
       run: "terraform apply -input=false -no-color -auto-approve tfplan",
@@ -216,10 +196,6 @@ applyWorkflow?.addJob("apply", {
 
 /**
  * Terraform Destroy
- *
- * Manual execution only.
- *
- * Requires approval through the terraform-apply environment.
  */
 const destroyWorkflow = project.github?.addWorkflow("terraform-destroy");
 
@@ -229,10 +205,9 @@ destroyWorkflow?.on({
 
 destroyWorkflow?.addJob("destroy", {
   name: "Terraform Destroy",
-
   runsOn: ["self-hosted"],
-
   environment: "terraform-apply",
+  env: terraformEnvironment,
 
   permissions: {
     contents: github.workflows.JobPermission.READ,
@@ -243,12 +218,10 @@ destroyWorkflow?.addJob("destroy", {
       name: "Checkout",
       uses: "actions/checkout@v4",
     },
-
     {
       name: "Terraform Init",
       run: "terraform init -input=false -no-color",
     },
-
     {
       name: "Terraform Destroy",
       run: [
@@ -283,10 +256,8 @@ for (const file of workflowFiles) {
   const source = path.join(sourceWorkflows, file);
   const destination = path.join(rootWorkflows, file);
 
-  // Make the generated file writable by the current user.
   fs.chmodSync(source, 0o644);
 
-  // Make an existing destination file writable before overwriting it.
   if (fs.existsSync(destination)) {
     fs.chmodSync(destination, 0o644);
   }

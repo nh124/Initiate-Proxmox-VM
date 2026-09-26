@@ -9,6 +9,9 @@ jobs:
     runs-on: self-hosted
     permissions:
       contents: read
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.RUSTFS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.RUSTFS_SECRET_KEY }}
     steps:
       - name: Checkout
         id: checkout
@@ -24,9 +27,9 @@ jobs:
         run: |-
           echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          printf '\x60\x60\x60text\n' >> "$GITHUB_STEP_SUMMARY"
           cat plan.txt >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          printf '\x60\x60\x60\n' >> "$GITHUB_STEP_SUMMARY"
       - name: Upload Terraform Plan
         id: upload_terraform_plan
         uses: actions/upload-artifact@v4

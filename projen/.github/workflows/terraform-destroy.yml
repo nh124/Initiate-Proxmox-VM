@@ -10,6 +10,9 @@ jobs:
     permissions:
       contents: read
     environment: terraform-apply
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.RUSTFS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.RUSTFS_SECRET_KEY }}
     steps:
       - name: Checkout
         id: checkout
