@@ -13,9 +13,9 @@ module "proxmox_vm" {
   for_each = {
     for vm in local.vms : vm.name => vm
   }
-  name   = each.value.name
-  cpu    = each.value.cpu
-  ram    = each.value.ram
-  disk   = each.value.disk
+  name   = each.value.vm_name
+  cpu    = each.value.cpu_cores
+  ram    = each.value.memory
+  disk   = each.value.disk_size
   bridge = each.value.bridge
 }
