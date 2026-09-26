@@ -19,4 +19,4 @@ jobs:
         run: terraform init -input=false -no-color
       - name: Terraform Destroy
         id: terraform_destroy
-        run: terraform destroy -auto-approve -input=false -no-color -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"
+        run: terraform destroy -auto-approve -input=false -no-color -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}" -proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}"
