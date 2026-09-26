@@ -30,7 +30,6 @@ const terraformVariables = [
   '-var="vm_username=${{ secrets.VM_USERNAME }}"',
   '-var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"',
   '-var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}"',
-  '-var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}"',
 ];
 
 /**
