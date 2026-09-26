@@ -2,43 +2,7 @@
 
 name: terraform-apply
 on:
-  workflow_dispatch:
-    inputs:
-      vm_name:
-        description: VM name
-        required: true
-        default: forgejo-dev-server
-        type: string
-      memory:
-        description: Memory in MB
-        required: true
-        default: "2048"
-        type: string
-      cpu_cores:
-        description: CPU cores
-        required: true
-        default: "2"
-        type: string
-      disk_size:
-        description: Disk size in GB
-        required: true
-        default: "10"
-        type: string
-      node_name:
-        description: Proxmox node
-        required: true
-        default: pve
-        type: string
-      datastore_id:
-        description: VM datastore
-        required: true
-        default: big-4tb
-        type: string
-      vm_username:
-        description: VM username
-        required: true
-        default: ubuntu
-        type: string
+  workflow_dispatch: {}
 jobs:
   apply:
     name: Terraform Apply
@@ -55,4 +19,4 @@ jobs:
         run: terraform init -input=false -no-color
       - name: Terraform Apply
         id: terraform_apply
-        run: terraform apply -auto-approve -input=false -no-color -var="vm_name=${{ inputs.vm_name }}" -var="memory=${{ inputs.memory }}" -var="cpu_cores=${{ inputs.cpu_cores }}" -var="disk_size=${{ inputs.disk_size }}" -var="node_name=${{ inputs.node_name }}" -var="datastore_id=${{ inputs.datastore_id }}" -var="vm_username=${{ inputs.vm_username }}" -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"
+        run: terraform apply -auto-approve -input=false -no-color -var="vm_password=${{ secrets.VM_PASSWORD }}" -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"

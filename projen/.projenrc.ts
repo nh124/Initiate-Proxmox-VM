@@ -9,10 +9,10 @@ const project = new typescript.TypeScriptProject({
 
   projenrcTs: true,
 
-  // Keep GitHub enabled so we can create our own workflows.
+  // Enable GitHub so we can create custom workflows.
   github: true,
 
-  // Disable Projen's default workflows/features.
+  // Disable Projen's default workflows.
   buildWorkflow: false,
   release: false,
   releaseToNpm: false,
@@ -22,89 +22,29 @@ const project = new typescript.TypeScriptProject({
   },
 });
 
-/**
- * Inputs shared by all Terraform workflows.
- */
-const terraformInputs = {
-  vm_name: {
-    description: "VM name",
-    required: true,
-    default: "forgejo-dev-server",
-    type: "string",
-  },
-
-  memory: {
-    description: "Memory in MB",
-    required: true,
-    default: "2048",
-    type: "string",
-  },
-
-  cpu_cores: {
-    description: "CPU cores",
-    required: true,
-    default: "2",
-    type: "string",
-  },
-
-  disk_size: {
-    description: "Disk size in GB",
-    required: true,
-    default: "10",
-    type: "string",
-  },
-
-  node_name: {
-    description: "Proxmox node",
-    required: true,
-    default: "pve",
-    type: "string",
-  },
-
-  datastore_id: {
-    description: "VM datastore",
-    required: true,
-    default: "big-4tb",
-    type: "string",
-  },
-
-  vm_username: {
-    description: "VM username",
-    required: true,
-    default: "ubuntu",
-    type: "string",
-  },
-} as const;
-
-/**
- * Terraform variables passed to Terraform CLI commands.
+/*
+ * Only secrets come from GitHub Actions.
+ *
+ * All VM configuration is defined in Terraform.
  */
 const terraformVariables = [
-  '-var="vm_name=${{ inputs.vm_name }}"',
-  '-var="memory=${{ inputs.memory }}"',
-  '-var="cpu_cores=${{ inputs.cpu_cores }}"',
-  '-var="disk_size=${{ inputs.disk_size }}"',
-  '-var="node_name=${{ inputs.node_name }}"',
-  '-var="datastore_id=${{ inputs.datastore_id }}"',
-  '-var="vm_username=${{ inputs.vm_username }}"',
   '-var="vm_password=${{ secrets.VM_PASSWORD }}"',
   '-var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}"',
 ];
 
-/**
+/*
  * Terraform Plan
+ *
+ * Manual execution only.
  */
 const planWorkflow = project.github?.addWorkflow("terraform");
 
 planWorkflow?.on({
-  workflowDispatch: {
-    inputs: terraformInputs,
-  },
+  workflowDispatch: {},
 });
 
 planWorkflow?.addJob("plan", {
   name: "Terraform Plan",
-
   runsOn: ["self-hosted"],
 
   permissions: {
@@ -116,12 +56,10 @@ planWorkflow?.addJob("plan", {
       name: "Checkout",
       uses: "actions/checkout@v4",
     },
-
     {
       name: "Terraform Init",
       run: "terraform init -input=false -no-color",
     },
-
     {
       name: "Terraform Plan",
       run: [
@@ -134,20 +72,19 @@ planWorkflow?.addJob("plan", {
   ],
 });
 
-/**
+/*
  * Terraform Apply
+ *
+ * Manual execution only.
  */
 const applyWorkflow = project.github?.addWorkflow("terraform-apply");
 
 applyWorkflow?.on({
-  workflowDispatch: {
-    inputs: terraformInputs,
-  },
+  workflowDispatch: {},
 });
 
 applyWorkflow?.addJob("apply", {
   name: "Terraform Apply",
-
   runsOn: ["self-hosted"],
 
   environment: "terraform-apply",
@@ -161,12 +98,10 @@ applyWorkflow?.addJob("apply", {
       name: "Checkout",
       uses: "actions/checkout@v4",
     },
-
     {
       name: "Terraform Init",
       run: "terraform init -input=false -no-color",
     },
-
     {
       name: "Terraform Apply",
       run: [
@@ -180,20 +115,19 @@ applyWorkflow?.addJob("apply", {
   ],
 });
 
-/**
+/*
  * Terraform Destroy
+ *
+ * Manual execution only.
  */
 const destroyWorkflow = project.github?.addWorkflow("terraform-destroy");
 
 destroyWorkflow?.on({
-  workflowDispatch: {
-    inputs: terraformInputs,
-  },
+  workflowDispatch: {},
 });
 
 destroyWorkflow?.addJob("destroy", {
   name: "Terraform Destroy",
-
   runsOn: ["self-hosted"],
 
   environment: "terraform-apply",
@@ -207,12 +141,10 @@ destroyWorkflow?.addJob("destroy", {
       name: "Checkout",
       uses: "actions/checkout@v4",
     },
-
     {
       name: "Terraform Init",
       run: "terraform init -input=false -no-color",
     },
-
     {
       name: "Terraform Destroy",
       run: [
@@ -226,30 +158,36 @@ destroyWorkflow?.addJob("destroy", {
   ],
 });
 
-/**
- * Synthesize the Projen project.
+/*
+ * Generate the Projen project.
  */
 project.synth();
 
-/**
- * Copy only the generated GitHub workflows
- * from the Projen directory to the repository root.
- *
- * projen/.github/workflows
- *             ↓
- * ../.github/workflows
- */
 const sourceWorkflows = path.join(process.cwd(), ".github", "workflows");
 
 const rootWorkflows = path.join(process.cwd(), "..", ".github", "workflows");
 
 fs.mkdirSync(rootWorkflows, { recursive: true });
 
-for (const file of fs.readdirSync(sourceWorkflows)) {
-  if (file.endsWith(".yml") || file.endsWith(".yaml")) {
-    fs.copyFileSync(
-      path.join(sourceWorkflows, file),
-      path.join(rootWorkflows, file)
-    );
+const workflowFiles = [
+  "terraform.yml",
+  "terraform-apply.yml",
+  "terraform-destroy.yml",
+];
+
+for (const file of workflowFiles) {
+  const source = path.join(sourceWorkflows, file);
+  const destination = path.join(rootWorkflows, file);
+
+  // Make the generated file writable by the current user.
+  fs.chmodSync(source, 0o644);
+
+  // Make an existing destination file writable before overwriting it.
+  if (fs.existsSync(destination)) {
+    fs.chmodSync(destination, 0o644);
   }
+
+  fs.copyFileSync(source, destination);
+
+  console.log(`Copied ${file} → ${destination}`);
 }
