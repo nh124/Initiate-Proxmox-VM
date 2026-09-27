@@ -41,3 +41,18 @@ variable "control_plane_ip" {
   type    = string
   default = "192.168.0.117"
 }
+
+variable "network_interface" {
+  type    = string
+  default = "eth0"
+}
+
+variable "network_gateway" {
+  type    = string
+  default = "192.168.0.1"
+}
+
+variable "network_mtu" {
+  type    = number
+  default = 1500
+}
