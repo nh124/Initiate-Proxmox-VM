@@ -6,6 +6,39 @@ data "talos_machine_configuration" "controlplane" {
   cluster_endpoint = var.cluster_endpoint
   machine_secrets  = talos_machine_secrets.this.machine_secrets
   talos_version    = var.talos_version
+
+  config_patches = [
+    yamlencode({
+      machine = {
+        network = {
+          interfaces = [
+            {
+              interface = "eth0"
+
+              dhcp = false
+
+              addresses = [
+                "192.168.0.117/24"
+              ]
+
+              routes = [
+                {
+                  network = "0.0.0.0/0"
+                  gateway = "192.168.0.1"
+                }
+              ]
+
+              mtu = 1500
+            }
+          ]
+
+          nameservers = [
+            "192.168.0.1"
+          ]
+        }
+      }
+    })
+  ]
 }
 
 data "talos_client_configuration" "this" {

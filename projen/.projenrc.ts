@@ -44,6 +44,10 @@ const terraformEnvironment = {
 const planWorkflow = project.github?.addWorkflow("terraform");
 
 planWorkflow?.on({
+  push: {
+    branches: ["main"],
+  },
+  pullRequest: {},
   workflowDispatch: {},
 });
 
@@ -81,9 +85,14 @@ planWorkflow?.addJob("plan", {
       run: [
         'echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY"',
         'echo "" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "<details>" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "<summary>Show Terraform Plan</summary>" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "" >> "$GITHUB_STEP_SUMMARY"',
         "printf '\\x60\\x60\\x60text\\n' >> \"$GITHUB_STEP_SUMMARY\"",
         'cat plan.txt >> "$GITHUB_STEP_SUMMARY"',
         "printf '\\x60\\x60\\x60\\n' >> \"$GITHUB_STEP_SUMMARY\"",
+        'echo "" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "</details>" >> "$GITHUB_STEP_SUMMARY"',
       ].join("\n"),
     },
     {
@@ -141,9 +150,14 @@ applyWorkflow?.addJob("plan", {
       run: [
         'echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY"',
         'echo "" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "<details>" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "<summary>Show Terraform Plan</summary>" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "" >> "$GITHUB_STEP_SUMMARY"',
         "printf '\\x60\\x60\\x60text\\n' >> \"$GITHUB_STEP_SUMMARY\"",
         'cat plan.txt >> "$GITHUB_STEP_SUMMARY"',
         "printf '\\x60\\x60\\x60\\n' >> \"$GITHUB_STEP_SUMMARY\"",
+        'echo "" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "</details>" >> "$GITHUB_STEP_SUMMARY"',
       ].join("\n"),
     },
     {
@@ -228,6 +242,32 @@ destroyWorkflow?.addJob("destroy", {
     {
       name: "Terraform Init",
       run: "terraform init -input=false -no-color",
+    },
+    {
+      name: "Terraform Plan",
+      run: [
+        "terraform plan",
+        "-input=false",
+        "-no-color",
+        "-out=tfplan",
+        ...terraformVariables,
+        "| tee plan.txt",
+      ].join(" "),
+    },
+    {
+      name: "Add Plan to Summary",
+      run: [
+        'echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "<details>" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "<summary>Show Terraform Plan</summary>" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "" >> "$GITHUB_STEP_SUMMARY"',
+        "printf '\\x60\\x60\\x60text\\n' >> \"$GITHUB_STEP_SUMMARY\"",
+        'cat plan.txt >> "$GITHUB_STEP_SUMMARY"',
+        "printf '\\x60\\x60\\x60\\n' >> \"$GITHUB_STEP_SUMMARY\"",
+        'echo "" >> "$GITHUB_STEP_SUMMARY"',
+        'echo "</details>" >> "$GITHUB_STEP_SUMMARY"',
+      ].join("\n"),
     },
     {
       name: "Terraform Destroy",

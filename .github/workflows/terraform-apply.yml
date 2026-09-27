@@ -27,9 +27,14 @@ jobs:
         run: |-
           echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "<details>" >> "$GITHUB_STEP_SUMMARY"
+          echo "<summary>Show Terraform Plan</summary>" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
           printf '\x60\x60\x60text\n' >> "$GITHUB_STEP_SUMMARY"
           cat plan.txt >> "$GITHUB_STEP_SUMMARY"
           printf '\x60\x60\x60\n' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "</details>" >> "$GITHUB_STEP_SUMMARY"
       - name: Upload Terraform Plan
         id: upload_terraform_plan
         uses: actions/upload-artifact@v4

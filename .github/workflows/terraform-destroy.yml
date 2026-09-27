@@ -20,6 +20,22 @@ jobs:
       - name: Terraform Init
         id: terraform_init
         run: terraform init -input=false -no-color
+      - name: Terraform Plan
+        id: terraform_plan
+        run: terraform plan -input=false -no-color -out=tfplan -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}" -var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}" | tee plan.txt
+      - name: Add Plan to Summary
+        id: add_plan_to_summary
+        run: |-
+          echo "## Terraform Plan" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "<details>" >> "$GITHUB_STEP_SUMMARY"
+          echo "<summary>Show Terraform Plan</summary>" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          printf '\x60\x60\x60text\n' >> "$GITHUB_STEP_SUMMARY"
+          cat plan.txt >> "$GITHUB_STEP_SUMMARY"
+          printf '\x60\x60\x60\n' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "</details>" >> "$GITHUB_STEP_SUMMARY"
       - name: Terraform Destroy
         id: terraform_destroy
         run: terraform destroy -auto-approve -input=false -no-color -var="proxmox_api_token=${{ secrets.PROXMOX_API_TOKEN }}" -var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}"
