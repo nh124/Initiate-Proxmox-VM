@@ -31,10 +31,6 @@ data "talos_machine_configuration" "controlplane" {
               mtu = 1500
             }
           ]
-
-          nameservers = [
-            "192.168.0.1"
-          ]
         }
       }
     })
