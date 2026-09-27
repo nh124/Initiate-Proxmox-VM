@@ -37,6 +37,43 @@ data "talos_machine_configuration" "controlplane" {
   ]
 }
 
+data "talos_machine_configuration" "worker" {
+  cluster_name     = var.cluster_name
+  machine_type     = "worker"
+  cluster_endpoint = var.cluster_endpoint
+  machine_secrets  = talos_machine_secrets.this.machine_secrets
+  talos_version    = var.talos_version
+
+  config_patches = [
+    yamlencode({
+      machine = {
+        network = {
+          interfaces = [
+            {
+              interface = "eth0"
+
+              dhcp = false
+
+              addresses = [
+                "192.168.0.118/24"
+              ]
+
+              routes = [
+                {
+                  network = "0.0.0.0/0"
+                  gateway = "192.168.0.1"
+                }
+              ]
+
+              mtu = 1500
+            }
+          ]
+        }
+      }
+    })
+  ]
+}
+
 data "talos_client_configuration" "this" {
   cluster_name         = var.cluster_name
   client_configuration = talos_machine_secrets.this.client_configuration
@@ -49,6 +86,17 @@ resource "talos_machine_configuration_apply" "controlplane" {
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
 
   node = var.control_plane_ip
+
+  depends_on = [
+    module.proxmox_vm
+  ]
+}
+
+resource "talos_machine_configuration_apply" "worker" {
+  client_configuration        = talos_machine_secrets.this.client_configuration
+  machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
+
+  node = "192.168.0.118"
 
   depends_on = [
     module.proxmox_vm
