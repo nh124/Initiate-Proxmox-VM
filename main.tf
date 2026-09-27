@@ -11,4 +11,5 @@ module "proxmox_vm" {
   node_name    = var.proxmox_node
   datastore_id = var.datastore_id
   bridge       = var.network_bridge
+  talos_iso_id = proxmox_download_file.talos_iso.id
 }

@@ -33,3 +33,7 @@ variable "datastore_id" {
 variable "bridge" {
   type = string
 }
+
+variable "talos_iso_id" {
+  type = string
+}
